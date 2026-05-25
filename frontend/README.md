@@ -1,73 +1,99 @@
-# React + TypeScript + Vite
+# LightRAG 前端对话界面
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+为 LightRAG 知识库引擎打造的前端对话界面，提供直观的 RAG 问答交互体验。
 
-Currently, two official plugins are available:
+## 功能概览
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+### 对话管理
 
-## React Compiler
+- **多对话支持**：左侧边栏列出所有历史对话，支持新建、切换、重命名和删除
+- **对话自动命名**：发送第一条消息时，自动截取消息内容作为对话标题
+- **搜索筛选**：支持按关键词搜索历史对话
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+### AI 问答
 
-## Expanding the ESLint configuration
+- **流式输出**：AI 回答实时逐字显示，无需等待完整响应
+- **多轮对话**：支持上下文连贯的多轮对话，AI 可参考历史消息
+- **参考来源**：AI 回答附带知识来源引用，点击可查看原文内容
+- **重新生成**：对不满意的 AI 回答可一键重新生成
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+### 对话数据持久化
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+- 对话记录和消息存储在 **LightRAG 服务器端 SQLite 数据库**中
+- 刷新页面或关闭浏览器后对话数据不丢失
+- 支持跨设备、跨会话的对话历史同步
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+### 交互功能
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+- **消息评价**：对 AI 回答标记"有用"/"无用"，帮助改进回答质量
+- **深色模式**：支持浅色/深色主题切换
+- **快捷键操作**：回车发送消息，Shift+Enter 换行
+- **错误提示**：API 异常时显示明确的错误信息
+
+## 界面布局
+
+```
+┌─────────────┬──────────────────────────────┐
+│             │                              │
+│  对话列表    │      消息对话区域              │
+│             │                              │
+│  会话1      │  ┌────────────────────────┐  │
+│  会话2      │  │ 用户: 什么是 RAG？      │  │
+│  会话3      │  │                        │  │
+│             │  │ AI: RAG 是一种检索增强  │  │
+│  [+ 新对话]  │  │ 生成技术...(流式显示)   │  │
+│             │  │                        │  │
+│  搜索框     │  │ [参考来源: doc1.pdf]   │  │
+│             │  └────────────────────────┘  │
+│             │                              │
+│             │  ┌──────────────────────┐   │
+│             │  │ 输入消息... [发送]    │   │
+│             │  └──────────────────────┘   │
+└─────────────┴──────────────────────────────┘
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+## 查询模式
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+支持多种 RAG 查询模式，可在设置中切换：
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+| 模式 | 说明 |
+|------|------|
+| **mix（推荐）** | 融合知识图谱与向量检索，兼顾精度和广度 |
+| **local** | 聚焦特定实体及其直接关系 |
+| **global** | 分析知识图谱中的全局模式 |
+| **hybrid** | 结合 local 和 global 两种方式 |
+| **naive** | 简单的向量相似度搜索，不依赖知识图谱 |
+
+## 技术栈
+
+- **框架**：React 19 + TypeScript
+- **构建工具**：Vite 8
+- **样式**：Tailwind CSS 4
+- **状态管理**：Zustand
+- **后端存储**：LightRAG 服务器 SQLite
+- **部署平台**：Vercel
+
+## 部署
+
+前端通过 Vercel 部署，API 请求通过 `/api` 代理转发到后端 LightRAG 服务器。
+
+### 环境变量
+
+| 变量 | 说明 |
+|------|------|
+| `VITE_API_BASE_URL` | LightRAG API 地址（开发环境使用） |
+| `VITE_API_KEY` | API 密钥（可选） |
+| `VITE_QUERY_MODE` | 默认查询模式，默认为 `mix` |
+| `VITE_TOP_K` | 检索数量，默认为 `60` |
+
+### 本地开发
+
+```bash
+cd lightrag_webui  # 或 cd frontend
+bun install
+bun run dev
 ```
+
+## 说明
+
+本前端项目是 LightRAG 知识库系统的配套对话界面，需配合 LightRAG 后端服务使用。
