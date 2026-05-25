@@ -59,7 +59,7 @@ def init_db(db_path: str):
                 conversation_id  TEXT NOT NULL REFERENCES conversations(id) ON DELETE CASCADE,
                 role             TEXT NOT NULL CHECK (role IN ('user', 'assistant')),
                 content          TEXT NOT NULL DEFAULT '',
-                references       TEXT,
+                "references"     TEXT,
                 is_error         INTEGER NOT NULL DEFAULT 0,
                 feedback         TEXT CHECK (feedback IN ('useful', 'useless')),
                 created_at       TEXT NOT NULL
@@ -158,7 +158,7 @@ def create_conversation_routes(rag, api_key: Optional[str] = None):
         conn = get_conn()
         try:
             rows = conn.execute(
-                "SELECT id, role, content, references, is_error, feedback, created_at "
+                'SELECT id, role, content, "references", is_error, feedback, created_at '
                 "FROM messages WHERE conversation_id = ? ORDER BY created_at ASC",
                 (conv_id,),
             ).fetchall()
@@ -186,7 +186,7 @@ def create_conversation_routes(rag, api_key: Optional[str] = None):
         try:
             now = datetime.now(timezone.utc).isoformat()
             conn.execute(
-                "INSERT INTO messages (id, conversation_id, role, content, references, is_error, created_at) "
+                'INSERT INTO messages (id, conversation_id, role, content, "references", is_error, created_at) '
                 "VALUES (?, ?, ?, ?, ?, ?, ?)",
                 (body.id, conv_id, body.role, body.content, body.references, int(body.is_error), now),
             )
