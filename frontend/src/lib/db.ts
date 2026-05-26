@@ -1,4 +1,4 @@
-import type { Conversation, Message } from '../types';
+import type { Conversation, Message, Reference } from '../types';
 
 const BASE_URL: string =
   import.meta.env.VITE_API_BASE_URL || (import.meta.env.PROD ? '/api' : '');
@@ -30,7 +30,7 @@ interface MessageRow {
   id: string;
   role: string;
   content: string;
-  references?: unknown;
+  references?: Reference[] | null;
   is_error?: boolean;
   feedback?: string | null;
   created_at: string;
@@ -44,7 +44,7 @@ export async function loadMessages(convId: string): Promise<Message[]> {
     content: row.content,
     references: row.references ?? undefined,
     isError: row.is_error ?? false,
-    feedback: row.feedback ?? undefined,
+    feedback: (row.feedback ?? undefined) as 'useful' | 'useless' | undefined,
   }));
 }
 
