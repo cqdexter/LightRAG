@@ -98,8 +98,6 @@ export const useChatStore = create<ChatStore>()(
       },
 
       deleteConversation: async (id) => {
-        const prevConvs = get().conversations;
-        const prevMsgs = { ...get().messages };
         set((s) => {
           const convs = s.conversations.filter((c) => c.id !== id);
           const msgs = { ...s.messages };
@@ -109,13 +107,6 @@ export const useChatStore = create<ChatStore>()(
             : s.currentConvId;
           return { conversations: convs, messages: msgs, currentConvId: nextId, streamingContent: '' };
         });
-
-        try {
-          await db.deleteConversation(id);
-        } catch (err) {
-          console.error('Failed to delete from server, rolling back:', err);
-          set({ conversations: prevConvs, messages: prevMsgs });
-        }
       },
 
       renameConversation: async (id, title) => {
