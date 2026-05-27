@@ -1,11 +1,12 @@
-import { Moon, Sun, Menu, Ban } from 'lucide-react';
+import { Moon, Sun, Menu, Ban, Settings } from 'lucide-react';
 import { useChatStore } from '../store/chatStore';
 
 interface Props {
   onToggleSidebar: () => void;
+  onOpenSettings: () => void;
 }
 
-export default function Header({ onToggleSidebar }: Props) {
+export default function Header({ onToggleSidebar, onOpenSettings }: Props) {
   const currentConvId = useChatStore((s) => s.currentConvId);
   const conversations = useChatStore((s) => s.conversations);
   const theme = useChatStore((s) => s.theme);
@@ -48,6 +49,14 @@ export default function Header({ onToggleSidebar }: Props) {
           style={{ color: 'var(--color-text-secondary)' }}
         >
           {theme === 'light' ? <Moon className="size-4" /> : <Sun className="size-4" />}
+        </button>
+        <button
+          onClick={onOpenSettings}
+          className="p-2 rounded-lg transition-colors"
+          style={{ color: 'var(--color-text-secondary)' }}
+          title="设置"
+        >
+          <Settings className="size-4" />
         </button>
       </div>
     </div>
