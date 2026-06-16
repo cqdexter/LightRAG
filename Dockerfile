@@ -22,6 +22,7 @@ FROM ghcr.io/astral-sh/uv:python3.12-bookworm-slim AS builder
 ENV DEBIAN_FRONTEND=noninteractive
 ENV UV_SYSTEM_PYTHON=1
 ENV UV_COMPILE_BYTECODE=1
+ENV UV_INDEX_URL=https://mirrors.tuna.tsinghua.edu.cn/pypi/web/simple
 
 WORKDIR /app
 

@@ -20,7 +20,7 @@ export default function Sidebar({ mobile, onClose }: Props) {
 
   return (
     <div
-      className="h-full flex flex-col"
+      className="h-full w-full min-w-0 flex flex-col"
       style={{ background: 'var(--color-surface)', borderRight: mobile ? 'none' : '1px solid var(--color-border)' }}
     >
       <div className="relative flex flex-col items-center gap-1 px-4 py-3" style={{ borderBottom: '1px solid var(--color-border)' }}>
